@@ -58,7 +58,23 @@ CREATE TABLE `developer` (
     PRIMARY KEY(id)
     )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-    -- --------------------------------------------------------
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `issue`
+--
+
+CREATE TABLE `issue`(
+	`id` bigint NOT NULL AUTO_INCREMENT,
+    `open_datetime` datetime,
+    `close_datetime` datetime,
+    `id_developer_author` bigint NOT NULL,
+    `observations` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+    `id_developer_assigned` bigint NOT NULL,
+    PRIMARY KEY(id)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
 
 INSERT INTO project (id,project_code, project_description, url) VALUES
 (1,"aabb","Example1","https://example1/andamios.net"),
@@ -84,7 +100,6 @@ INSERT INTO `help` (`id`, `id_resolution`, `id_developer`, `percentage`) VALUES
 (9, 4, 7, 1), 
 (10, 10, 4, 10);
 
-
 INSERT INTO `task` VALUES
 (1, 'SQL db test',2,4,8),
 (2, 'Inno db is cool',4,3,9),
@@ -108,3 +123,15 @@ INSERT INTO `developer` (`name`, `surname`, `second_name`, `email`, `administrad
 ('quique', 'aroca', 'garcia', 'test@email.com', 0), 
 ('adrian', 'duyang', 'liang', 'test@email.com', 0), 
 ('rafael', 'aznar', 'caballero', 'test@email.com', 1);
+
+INSERT INTO `issue` (`id`, `open_datetime`, `close_datetime`, `id_developer_author`, `observations`, `id_developer_assigned`) VALUES
+(1, `2022-09-25`, `2022-10-02`, 1, `example observation 1`, 2),
+(2, `2022-09-10`, `2022-09-24`, 2, `example observation 2`, 3)
+(3, `2022-10-01`, `2022-10-05`, 3, `example observation 3`, 4)
+(4, `2022-10-06`, `2022-10-15`, 4, `example observation 4`, 5)
+(5, `2022-10-15`, `2022-10-18`, 5, `example observation 5`, 6)
+(6, `2022-10-25`, `2022-10-29`, 6, `example observation 6`, 7)
+(7, `2022-11-11`, `2022-11-15`, 7, `example observation 7`, 8)
+(8, `2022-11-25`, `2022-11-28`, 8, `example observation 8`, 9)
+(9, `2022-12-02`, `2022-12-20`, 9, `example observation 9`, 10)
+(10, `2022-12-15`, `2022-12-20`, 10, `example observation 10`, 2);
