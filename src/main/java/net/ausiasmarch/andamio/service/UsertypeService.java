@@ -1,6 +1,7 @@
 package net.ausiasmarch.andamio.service;
 
 import net.ausiasmarch.andamio.entity.UsertypeEntity;
+import net.ausiasmarch.andamio.exception.ResourceNotFoundException;
 import net.ausiasmarch.andamio.repository.UsertypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,18 @@ public class UsertypeService {
         oAuthService.OnlyAdmins();
         return oUsertypeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserType with id: " + id + " not found"));
+    }
+
+    public void validate(Long id) {
+        if (!oUsertypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("id " + id + " not exist");
+        }
+    }
+
+    public Long update(UsertypeEntity oUsertypeEntity) {
+        validate(oUsertypeEntity.getId());
+        oAuthService.OnlyAdmins();
+        oUsertypeRepository.save(oUsertypeEntity);
+        return oUsertypeEntity.getId();
     }
 }
