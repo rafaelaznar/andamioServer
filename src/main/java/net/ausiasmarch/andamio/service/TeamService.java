@@ -3,10 +3,17 @@ package net.ausiasmarch.andamio.service;
 import net.ausiasmarch.andamio.entity.TeamEntity;
 import net.ausiasmarch.andamio.exception.ResourceNotFoundException;
 import net.ausiasmarch.andamio.exception.UnauthorizedException;
+import net.ausiasmarch.andamio.helper.RandomHelper;
 import net.ausiasmarch.andamio.repository.TeamRepository;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -70,5 +77,15 @@ public class TeamService {
     public Long count() {
         oAuthService.OnlyAdmins();
         return oTeamRepository.count();
-        }
+    }
+
+    public TeamEntity getOneRandom() {
+        TeamEntity oTipoProductoEntity = null;
+        int iPosicion = RandomHelper.getRandomInt(0, (int) oTeamRepository.count() - 1);
+        Pageable oPageable = PageRequest.of(iPosicion, 1);
+        Page<TeamEntity> tipoProductoPage = oTeamRepository.findAll(oPageable);
+        List<TeamEntity> tipoProductoList = tipoProductoPage.getContent();
+        oTipoProductoEntity = oTeamRepository.getById(tipoProductoList.get(0).getId());
+        return oTipoProductoEntity;
+    }
 }

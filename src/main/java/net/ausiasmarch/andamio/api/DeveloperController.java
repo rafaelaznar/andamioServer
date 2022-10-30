@@ -61,4 +61,13 @@ public class DeveloperController {
         return new ResponseEntity<Long>(oDeveloperService.delete(id), HttpStatus.OK);
     }
 
+    @PostMapping("/generate")
+    public ResponseEntity<DeveloperEntity> generate() {
+        return new ResponseEntity<>(oDeveloperService.generate(), HttpStatus.OK);
+    }
+
+    @PostMapping("/generate/{amount}")
+    public ResponseEntity<Long> generateSome(@PathVariable(value = "amount") Integer amount) {
+        return new ResponseEntity<>(oDeveloperService.generateSome(amount), HttpStatus.OK);
+    }
 }
