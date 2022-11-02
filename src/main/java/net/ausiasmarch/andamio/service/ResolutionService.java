@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import net.ausiasmarch.andamio.entity.DeveloperEntity;
 import net.ausiasmarch.andamio.entity.ResolutionEntity;
 import net.ausiasmarch.andamio.exception.CannotPerformOperationException;
+import net.ausiasmarch.andamio.exception.ResourceNotFoundException;
+import net.ausiasmarch.andamio.exception.ResourceNotModifiedException;
 import net.ausiasmarch.andamio.helper.RandomHelper;
 import net.ausiasmarch.andamio.repository.ResolutionRepository;
 
@@ -34,6 +36,12 @@ public class ResolutionService {
     IssueService oIssueService;
 
     
+    public void validate(Long id) {
+        if (!oResolutionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("id " + id + " not exist");
+        }
+    }
+
     public ResolutionEntity get(Long id) {
         oAuthService.OnlyAdmins();
         return oResolutionRepository.getById(id);
@@ -100,5 +108,15 @@ public class ResolutionService {
         }
     }
 
+    public Long delete(Long id) {
+        oAuthService.OnlyAdmins();
+        validate(id);
+        oResolutionRepository.deleteById(id);
+        if (oResolutionRepository.existsById(id)) {
+            throw new ResourceNotModifiedException("can't remove register " + id);
+        } else {
+            return id;
+        }
+    }
     
 }
