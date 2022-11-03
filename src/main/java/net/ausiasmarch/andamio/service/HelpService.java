@@ -6,7 +6,9 @@ import net.ausiasmarch.andamio.helper.RandomHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springdoc.core.converters.models.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import net.ausiasmarch.andamio.entity.HelpEntity;
@@ -74,4 +76,18 @@ public class HelpService {
         oAuthService.OnlyAdmins();
         return oHelpRepository.save(oHelpEntity).getId();
     }
+
+    public Page<HelpEntity> getPage(Pageable oPageable, Long id_resolution, Long id_developer) {
+        oAuthService.OnlyAdmins();
+        if(id_resolution == null && id_developer == null) {
+        return oHelpRepository.findAll(oPageable); 
+        } else if(id_resolution == null) {
+        return oHelpRepository.findByDeveloperId(id_developer,oPageable);
+        } else if(id_developer == null) {
+        return oHelpRepository.findByResolutionId(id_resolution, oPageable);
+        }
+        else {
+        return oHelpRepository.findByResolutionIdAndDeveloperId(id_resolution, id_developer, oPageable);
+        }
+        }
 }
