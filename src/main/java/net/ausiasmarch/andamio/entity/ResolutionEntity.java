@@ -154,6 +154,9 @@ public class ResolutionEntity {
         this.developer = developer;
     }
     
-    
+    @PreRemove
+    public void nullify() {
+	    this.helps.forEach(c -> c.setResolution(null));
+    }
     
     }
