@@ -62,7 +62,7 @@ public class DeveloperService {
     public void validate(DeveloperEntity oDeveloperEntity) {
         ValidationHelper.validateStringLength(oDeveloperEntity.getName(), 2, 50, "campo name de Developer(el campo debe tener longitud de 2 a 50 caracteres)");
         ValidationHelper.validateStringLength(oDeveloperEntity.getSurname(), 2, 50, "campo surname de Developer(el campo debe tener longitud de 2 a 50 caracteres)");
-        ValidationHelper.validateStringLength(oDeveloperEntity.getLast_name(), 2, 50, "campo lastname de Developer(el campo debe tener longitud de 2 a 50 caracteres)");
+        ValidationHelper.validateStringLength(oDeveloperEntity.getLastname(), 2, 50, "campo lastname de Developer(el campo debe tener longitud de 2 a 50 caracteres)");
         ValidationHelper.validateEmail(oDeveloperEntity.getEmail(), "campo email de Developer");
         ValidationHelper.validateLogin(oDeveloperEntity.getUsername(), "campo username de Developer");
         if (oDeveloperRepository.existsByUsername(oDeveloperEntity.getUsername())) {
@@ -73,13 +73,13 @@ public class DeveloperService {
     }
 
     public DeveloperEntity get(Long id) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         return oDeveloperRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Developer with id: " + id + " not found"));
     }
 
     public Page<DeveloperEntity> getPage(Pageable oPageable, String strFilter, Long id_team, Long id_usertype) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         ValidationHelper.validateRPP(oPageable.getPageSize());
         if (strFilter == null) {
             if (id_team == null) {
@@ -98,15 +98,15 @@ public class DeveloperService {
         } else {
             if (id_team == null) {
                 if (id_usertype == null) {
-                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLast_nameIgnoreCaseContaining(strFilter, strFilter, strFilter, oPageable);
+                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLastnameIgnoreCaseContaining(strFilter, strFilter, strFilter, oPageable);
                 } else {
-                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLast_nameIgnoreCaseContainingAndUsertypeId(strFilter, strFilter, strFilter, id_usertype, oPageable);
+                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLastnameIgnoreCaseContainingAndUsertypeId(strFilter, strFilter, strFilter, id_usertype, oPageable);
                 }
             } else {
                 if (id_usertype == null) {
-                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLast_nameIgnoreCaseContainingAndTeamId(strFilter, strFilter, strFilter, id_team, oPageable);
+                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLastnameIgnoreCaseContainingAndTeamId(strFilter, strFilter, strFilter, id_team, oPageable);
                 } else {
-                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLast_nameIgnoreCaseContainingAndTeamIdAndUsertypeId(strFilter, strFilter, strFilter, id_team, id_usertype, oPageable);
+                    return oDeveloperRepository.findByNameIgnoreCaseContainingOrSurnameIgnoreCaseContainingOrLastnameIgnoreCaseContainingAndTeamIdAndUsertypeId(strFilter, strFilter, strFilter, id_team, id_usertype, oPageable);
                 }
             }
         }
@@ -114,25 +114,25 @@ public class DeveloperService {
     }
 
     public Long count() {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         return oDeveloperRepository.count();
     }
 
     public Long update(DeveloperEntity oDeveloperEntity) {
         validate(oDeveloperEntity.getId());
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         return oDeveloperRepository.save(oDeveloperEntity).getId();
     }
 
     public Long create(DeveloperEntity oNewDeveloperEntity) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         validate(oNewDeveloperEntity);
         oNewDeveloperEntity.setId(0L);
         return oDeveloperRepository.save(oNewDeveloperEntity).getId();
     }
 
     public Long delete(Long id) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         validate(id);
         oDeveloperRepository.deleteById(id);
         if (oDeveloperRepository.existsById(id)) {
@@ -162,7 +162,7 @@ public class DeveloperService {
 
         oDeveloperEntity.setName(names.get(RandomHelper.getRandomInt(0, names.size() - 1)));
         oDeveloperEntity.setSurname(surnames.get(RandomHelper.getRandomInt(0, names.size() - 1)));
-        oDeveloperEntity.setLast_name(last_names.get(RandomHelper.getRandomInt(0, names.size() - 1)));
+        oDeveloperEntity.setLastname(last_names.get(RandomHelper.getRandomInt(0, names.size() - 1)));
 
         oDeveloperEntity.setUsername((oDeveloperEntity.getName().toLowerCase()
                 + oDeveloperEntity.getSurname().toLowerCase()).replaceAll("\\s", ""));
@@ -184,12 +184,12 @@ public class DeveloperService {
     }
 
     public DeveloperEntity generateOne() {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         return oDeveloperRepository.save(generateDeveloper());
     }
 
     public Long generateSome(Long amount) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         List<DeveloperEntity> developerToSave = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             developerToSave.add(generateDeveloper());
