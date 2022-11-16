@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,6 +57,17 @@ public class ResolutionController {
     public ResponseEntity<Long> generateSome(@PathVariable(value = "amount") int amount) {
         return new ResponseEntity<Long>(oResolutionService.generateSome(amount), HttpStatus.OK);
     }
+
+    @PutMapping("/")
+    public ResponseEntity<Long> update(@RequestBody ResolutionEntity oResolutionEntity) {
+        return new ResponseEntity<Long>(oResolutionService.update(oResolutionEntity.getId(), oResolutionEntity), HttpStatus.OK);
+    }
+    
+    @PostMapping("/")
+    public ResponseEntity<Long> create(@RequestBody ResolutionEntity oNewResolutionEntity){
+        return new ResponseEntity<Long>(oResolutionService.create(oNewResolutionEntity), HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> delete(@PathVariable(value = "id") Long id) {

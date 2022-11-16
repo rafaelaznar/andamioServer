@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +50,12 @@ public class ProjectController {
     public ResponseEntity<Long> count() {
         return new ResponseEntity<Long>(oProjectService.count(), HttpStatus.OK);
     }
-    
+
+    @PostMapping
+    public ResponseEntity<Long> create(@RequestBody ProjectEntity oProjectEntity) {
+        return new ResponseEntity<>(oProjectService.create(oProjectEntity), HttpStatus.OK);
+    }
+
     @PutMapping("")
     public ResponseEntity<Long> update(@RequestBody ProjectEntity oProjectEntity) {
         return new ResponseEntity<Long>(oProjectService.update(oProjectEntity), HttpStatus.OK);
@@ -58,6 +64,16 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     public Long delete(@PathVariable(value = "id") Long id){
         return oProjectService.delete(id);
+    }
+
+    @PostMapping("/generate")
+    public ResponseEntity<ProjectEntity> generate() {
+        return new ResponseEntity<ProjectEntity>(oProjectService.generate(), HttpStatus.OK);
+    }
+    
+    @PostMapping("/generate/{amount}")
+    public ResponseEntity<Long> generateSome(@PathVariable(value = "amount") Integer amount) {
+        return new ResponseEntity<>(oProjectService.generateSome(amount), HttpStatus.OK);
     }
     
 }

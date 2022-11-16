@@ -1,6 +1,9 @@
 package net.ausiasmarch.andamio.service;
 
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +17,7 @@ import net.ausiasmarch.andamio.exception.ResourceNotFoundException;
 import net.ausiasmarch.andamio.exception.ResourceNotModifiedException;
 import net.ausiasmarch.andamio.helper.RandomHelper;
 import net.ausiasmarch.andamio.repository.ResolutionRepository;
-
+import net.ausiasmarch.andamio.helper.ValidationHelper;
 
 @Service
 public class ResolutionService {
@@ -43,17 +46,17 @@ public class ResolutionService {
     }
 
     public ResolutionEntity get(Long id) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         return oResolutionRepository.getById(id);
     }
 
     public Long count() {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         return oResolutionRepository.count();
     }
     
     public Page<ResolutionEntity> getPage(String strFilter, Long id_issue, Long id_developer, Pageable oPageable) {
-        oAuthService.OnlyAdmins();
+        //oAuthService.OnlyAdmins();
         if (strFilter == null && id_issue == null && id_developer == null) {
             return oResolutionRepository.findAll(oPageable);
         } else if (id_developer == null && id_issue == null) {
@@ -108,6 +111,21 @@ public class ResolutionService {
         }
     }
 
+    public ResolutionEntity getOneRandom() {
+        ResolutionEntity oTipoProductoEntity = null;
+        int iPosicion = RandomHelper.getRandomInt(0, (int) oResolutionRepository.count() - 1);
+        Pageable oPageable = PageRequest.of(iPosicion, 1);
+        Page<ResolutionEntity> tipoProductoPage = oResolutionRepository.findAll(oPageable);
+        List<ResolutionEntity> tipoProductoList = tipoProductoPage.getContent();
+        oTipoProductoEntity = oResolutionRepository.getById(tipoProductoList.get(0).getId());
+        return oTipoProductoEntity;
+    }
+
+    public void validate(Long id){
+        if (!oResolutionRepository.existsById(id)) {
+            throw new CannotPerformOperationException("id " + id + " not exist");
+        }
+    }
     public Long delete(Long id) {
         oAuthService.OnlyAdmins();
         validate(id);
@@ -119,4 +137,30 @@ public class ResolutionService {
         }
     }
     
+    public Long update(Long id, ResolutionEntity oResolutionEntity) {
+        //oAuthService.OnlyAdmins();
+        //oResolutionEntity.setId(id);
+        //validate(id);
+        //validate(oResolutionEntity);
+        return oResolutionRepository.save(oResolutionEntity).getId();
+    }
+
+    public void validate(ResolutionEntity oResolutionEntity){
+     
+        oIssueService.validate(oResolutionEntity.getIssue().getId());
+        ValidationHelper.validateStringLength(oResolutionEntity.getObservations(), 10, 255, "campo observations de resolution (debe tener una longitud entre 10 y 255)");
+        ValidationHelper.validateRange(oResolutionEntity.getIntegration_turn(), 0, 100, "campo integration Turn de resolution (debe ser un entero entre 0 y 100)");
+        ValidationHelper.validateDate(oResolutionEntity.getIntegration_datetime(), LocalDateTime.of(1990, 01, 01, 00, 00, 00), LocalDateTime.of(2025, 01, 01, 00, 00, 00), "campo fecha de resolution");
+        ValidationHelper.validateStringLength(oResolutionEntity.getPullrequest_url(), 10, 255, "campo URL de resolution (debe tener una longitud entre 10 y 255)");
+        ValidationHelper.validateRange(oResolutionEntity.getValue(), 0, 4, "campo value de Resolution (debe ser un entero entre 0 y 4)");
+        oDeveloperService.validate(oResolutionEntity.getDeveloper().getId());
+    }
+
+
+    public Long create(ResolutionEntity oNewResolutionEntity) {
+        //oAuthService.OnlyAdmins();
+        validate(oNewResolutionEntity);
+        oNewResolutionEntity.setId(0L);
+        return oResolutionRepository.save(oNewResolutionEntity).getId();
+    }
 }
