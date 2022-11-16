@@ -163,4 +163,15 @@ public class ResolutionService {
         oNewResolutionEntity.setId(0L);
         return oResolutionRepository.save(oNewResolutionEntity).getId();
     }
+
+    public Long delete(Long id) {
+        oAuthService.OnlyAdmins();
+        validate(id);
+        oResolutionRepository.deleteById(id);
+        if (oResolutionRepository.existsById(id)) {
+            throw new ResourceNotModifiedException("can't remove register " + id);
+        } else {
+            return id;
+        }
+    }
 }
